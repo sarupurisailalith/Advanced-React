@@ -16,5 +16,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
+  "eslint.workingDirectories": [
+    "backend"
+  ],
   "prettier.disableLanguages": ["javascript", "javascriptreact"]
 }

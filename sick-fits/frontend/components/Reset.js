@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
-import PropTypes from 'prop-types';
 import Form from './styles/Form';
 import useForm from '../lib/useForm';
-import DisplayError from './ErrorMessage';
+import Error from './ErrorMessage';
 
 const RESET_MUTATION = gql`
   mutation RESET_MUTATION(
@@ -11,7 +10,7 @@ const RESET_MUTATION = gql`
     $password: String!
     $token: String!
   ) {
-    redeemUserPasswordRestToken(
+    redeemUserPasswordResetToken(
       email: $email
       token: $token
       password: $password
@@ -31,22 +30,26 @@ export default function Reset({ token }) {
   const [reset, { data, loading, error }] = useMutation(RESET_MUTATION, {
     variables: inputs,
   });
+  const successfulError = data?.redeemUserPasswordResetToken?.code
+    ? data?.redeemUserPasswordResetToken
+    : undefined;
+  console.log(error);
   async function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); // stop the form from submitting
+    console.log(inputs);
     const res = await reset().catch(console.error);
     console.log(res);
+    console.log({ data, loading, error });
     resetForm();
+    // Send the email and password to the graphqlAPI
   }
-  const succesfulError = data?.redeemUserPasswordRestToken?.code
-    ? data?.redeemUserPasswordRestToken
-    : undefined;
   return (
     <Form method="POST" onSubmit={handleSubmit}>
-      <h2>Reset your password</h2>
-      <DisplayError error={error || succesfulError} />
+      <h2>Reset Your Password</h2>
+      <Error error={error || successfulError} />
       <fieldset>
-        {data?.redeemUserPasswordRestToken === null && (
-          <p>Success! You can now sign in!</p>
+        {data?.redeemUserPasswordResetToken === null && (
+          <p>Success! You can Now sign in</p>
         )}
 
         <label htmlFor="email">
@@ -54,7 +57,7 @@ export default function Reset({ token }) {
           <input
             type="email"
             name="email"
-            placeholder="Your email address"
+            placeholder="Your Email Address"
             autoComplete="email"
             value={inputs.email}
             onChange={handleChange}
@@ -71,13 +74,8 @@ export default function Reset({ token }) {
             onChange={handleChange}
           />
         </label>
-
-        <button type="submit">Reset Password</button>
+        <button type="submit">Request Reset!</button>
       </fieldset>
     </Form>
   );
 }
-
-Reset.propTypes = {
-  token: PropTypes.string,
-};
