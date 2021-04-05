@@ -19,7 +19,7 @@ async function addToCart(
         // see if the items added are already in the cart
         const [existingCartItem] = allCartItems;
         if(existingCartItem) {
-            console.log(`There are already ${existingCartItem.quantity}, increment by 1`);
+            // console.log(`There are already ${existingCartItem.quantity}, increment by 1`);
             return await context.lists.CartItem.updateOne({
                 id: existingCartItem.id,
                 data: {quantity: existingCartItem.quantity + 1},

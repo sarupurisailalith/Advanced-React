@@ -1,6 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import React from 'react';
+import { CURRENT_USER_QUERY } from './User';
 
 const ADD_TO_CART = gql`
   mutation ADD_TO_CART($id: ID!) {
@@ -15,6 +17,11 @@ export default function AddToCart({ id }) {
     variables: {
       id,
     },
+    refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
-  return <button type="button">Add To Cart 🛒</button>;
+  return (
+    <button disabled={loading} type="button" onClick={addToCart}>
+      Add{loading && 'ing'} To Cart 🛒
+    </button>
+  );
 }
